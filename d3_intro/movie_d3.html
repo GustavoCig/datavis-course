@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Vinculando um vetor numérico</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+<body>
+
+<script type="text/javascript">
+    function render(data) {
+        d3.select("body").selectAll("div.h-bar")
+            .data(data)
+            .enter()
+                .append("div")
+                    .attr("class", "h-bar")
+                    .style("width", "30px")
+                .append("span");
+    }
+    d3.json("data/movies.json").then(json => {
+      render(json);  
+  });
+</script>
+
+</body>
+</html>
