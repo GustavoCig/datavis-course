@@ -9,7 +9,14 @@
 <body>
 
 <script type="text/javascript">
+
+    let colorScale = d3.scaleLinear()
+        .domain([0, 100])
+        .range(["#deebf7", "#08306b"]);
+    let test;
+
     function render(data) {
+      test = data;
         d3.select("body").selectAll("div.h-bar")
             .data(data)
             .enter()
@@ -17,10 +24,34 @@
                     .attr("class", "h-bar")
                     .style("width", "30px")
                 .append("span");
+
+        d3.select("body").selectAll("div.h-bar")
+            .data(data) 
+                .style("width", function (d) { 
+                    return (d.Worldwide_Gross_M * 5) + "px";
+                });
+                //.style("background-color", function(d){
+                //    return colorScale(d.gross); 
+                //})
+                //.select("span") 
+                //    .text(function (d) {
+                //        return d.gross;
+                //    });
     }
-    d3.json("data/movies.json").then(json => {
-      render(json);  
-  });
+
+    d3.json("data/movies.json").then( (json) => {
+      profit_data = [];
+      for(let index = 0; index < json.length; index++) {
+        let entry = {};
+        entry["film"] = json[index]["Film"];
+        entry["profit"] = json[index]["Worldwide_Gross_M"] - json[index]["Budget_M"];
+        profit_data.push(entry);
+      }
+      ordered_gross = Object.assign({}, json.sort((a, b) => a.Worldwide_Gross_M - b.Worldwide_Gross_M));
+      ordered_budget = Object.assign({}, json.sort((a, b) => a.Budget_M - b.budget));
+      ordered_profit = Object.assign({}, profit_data.sort((a, b) => a.profit - b.profit));
+      render(ordered_gross);  
+    });
 </script>
 
 </body>
