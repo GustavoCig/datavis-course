@@ -11,7 +11,7 @@
 
 </head>
 <body>
-     <div><h1> Valores das ações da Tesla e do Facebook</h1>
+     <div><h1> Valores das ações da Tesla e do Facebook em porcentagem</h1>
         <div id="chart"></div>
     </div>
     <script type="text/javascript">
@@ -19,6 +19,7 @@
 
         d3.csv("data/stocks.csv").then(function(data){
             // formatando nossos dados
+            let parseDate = d3.timeParse("%Y/%m/%d");
             data.forEach(function(d){
                 d.date = parseDate(d.date);
                 d.tesla = +d.tesla;
