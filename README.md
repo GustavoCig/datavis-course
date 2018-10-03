@@ -29,6 +29,10 @@ Site: [https://gustavocig.github.io/datavis-course/](https://gustavocig.github.i
 [acoes.html](d3_crossfilter/acoes.html)
 [movies_d3_dc.html](d3_crossfilter/movies_d3_dc.html)
 
+## Aula do dia 26/09/2018
+
+[earthquakes.html](d3_crossfilter_2/earthquakes.html)
+
 ---
 
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
