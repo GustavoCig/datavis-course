@@ -26,13 +26,17 @@ Site: [https://gustavocig.github.io/datavis-course/](https://gustavocig.github.i
 
 ## Aula do dia 24/09/2018
 
-[acoes.html](d3_crossfilter/acoes.html)
+[acoes.html](d3_crossfilter/acoes.html)<br>
 [movies_d3_dc.html](d3_crossfilter/movies_d3_dc.html)
 
 ## Aula do dia 26/09/2018 e 03/10/2018
 
-[earthquakes.html](d3_crossfilter_2/earthquakes.html)
+[earthquakes.html](d3_crossfilter_2/earthquakes.html)<br>
 [chicago.html](d3_crossfilter_2/chicago.html)
+
+## Aula do dia 10/10/2018
+
+[songs.html](d3_networks_trees/songs.html)
 
 ---
 
