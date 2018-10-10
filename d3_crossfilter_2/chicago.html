@@ -61,7 +61,8 @@ crossorigin=""></script>
         dateParser = d3.timeFormat('%m/%d/%Y');
 
 	  data.forEach( d => {
-      d.date = dateParser(utcParser(d.Date.substr(0, 19)));
+      d.dateHour = utcParser(d.Date.substr(0, 19));
+      d.date = dateParser(d.dateHour);
       d.crimeType = d['Primary Type'];
       d.description = d.Description;
       let circle = L.circle([d.Latitude, d.Longitude], 90, {
@@ -75,7 +76,7 @@ crossorigin=""></script>
 	  let facts = crossfilter(data),
         crimeTypeDimension = facts.dimension( d => d.crimeType ),
 	      dateDimension = facts.dimension(  d => d.date ),
-        crimePerDayDimension = facts.dimension( d =>  [d.crimeType, d.date])
+        crimePerDayDimension = facts.dimension( d =>  [d.crimeType, d3.timeDay(d.dateHour)])
         crimeCountGroup = crimeTypeDimension.group(),
         crimePerDayGroup = crimePerDayDimension.group();
 
@@ -97,7 +98,7 @@ crossorigin=""></script>
           .width(900)
           .height(400)
           .chart(c => dc.lineChart(c))
-          .x(d3.scaleTime().domain(d3.extent(data, d => d.date)))
+          .x(d3.scaleTime().domain(d3.extent(data, d => d.dateHour)))
           .dimension(crimePerDayDimension)
           .group(crimePerDayGroup)
           .colors(colorScale)
