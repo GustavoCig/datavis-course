@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title> Chicago's Crime Data</title>
+
+    <!-- Custom styles for this template -->
+	<link rel="stylesheet" href="css/dc.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+crossorigin=""/>
+    <script src="js/crossfilter.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="js/dc.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+crossorigin=""></script>
+</head>
+<body>
+  <main role="main" class="container">
+    <div class='row'>
+      <div id="mapidLarger">
+      </div>
+    </div>
+    </br>
+    <div id="row">
+      <div class="col-6">
+        <div id='crime-types-chart'>
+          <h4> Number of crimes per type </h4>
+        </div>
+        <div id='crimes-per-day-chart'>
+          <h4> Number of Crimes per day per type </h4>
+        </div>   
+      </div>
+    </div>
+
+	</div>
+  <script type="text/javascript">
+  let crimeTypeChart = dc.barChart('#crime-types-chart');
+      crimesPerDayChart = dc.seriesChart('#crimes-per-day-chart');
+
+  let colorScale = d3.scaleOrdinal()
+                    .domain(['HOMICIDE', 'ROBBERY', 'BURGLARY'])
+                    .range(['#CA0020', '#0571B0', '#FDAE61']);
+
+  let map = L.map('mapidLarger').setView([41.8781, -87.6298], 10);
+  L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+    attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL',
+    maxZoom: 17
+  }).addTo(map);
+
+	d3.csv("data/chicago_crimes_sep_2018.csv").then(function (data) {
+    
+    let utcParser = d3.utcParse('%m/%d/%Y %H:%M:%S'),
+        dateParser = d3.timeFormat('%m/%d/%Y');
+
+	  data.forEach( d => {
+      d.date = dateParser(utcParser(d.Date.substr(0, 19)));
+      d.crimeType = d['Primary Type'];
+      d.description = d.Description;
+      let circle = L.circle([d.Latitude, d.Longitude], 90, {
+          color: colorScale(d['Primary Type'])
+      }).addTo(map);
+      circle.bindPopup("Crime - " + d['Primary Type'] + "</br>"
+        + "Date - " + d.date + "</br>"
+        + "Description - " + d.description);
+    });
+
+	  let facts = crossfilter(data),
+        crimeTypeDimension = facts.dimension( d => d.crimeType ),
+	      dateDimension = facts.dimension(  d => d.date ),
+        crimePerDayDimension = facts.dimension( d =>  [d.crimeType, d.date])
+        crimeCountGroup = crimeTypeDimension.group(),
+        crimePerDayGroup = crimePerDayDimension.group();
+
+    crimeTypeChart
+      .width(480)
+      .height(300)
+      .dimension(crimeTypeDimension)
+      .group(crimeCountGroup)
+      .x(d3.scaleBand())
+      .xUnits(dc.units.ordinal)
+      .gap(56)
+      .elasticY(true)
+      .on('renderlet', chart => {
+        chart.selectAll('rect.bar')
+          .attr('fill', d => colorScale(d.x));
+      });
+
+    crimesPerDayChart
+          .width(900)
+          .height(400)
+          .chart(c => dc.lineChart(c))
+          .x(d3.scaleTime().domain(d3.extent(data, d => d.date)))
+          .dimension(crimePerDayDimension)
+          .group(crimePerDayGroup)
+          .colors(colorScale)
+          .brushOn(true)
+          .seriesAccessor(d => d.key[0])
+          .keyAccessor(d => d.key[1])
+          .valueAccessor(d => d.value)
+          .legend(dc.legend().x(770).y(10).itemHeight(15).gap(5));
+
+
+	  dc.renderAll();
+
+	});
+	</script>
+	 <!-- Bootstrap javascript files -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		
+</body>
+</html>
