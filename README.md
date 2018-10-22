@@ -36,7 +36,8 @@ Site: [https://gustavocig.github.io/datavis-course/](https://gustavocig.github.i
 
 ## Aula do dia 10/10/2018
 
-[songs.html](d3_networks_trees/songs.html)
+[songs.html](d3_networks_trees/songs.html)</br>
+[lesmiserables.html](d3_networks_trees/lesmiserables.html)
 
 ---
 

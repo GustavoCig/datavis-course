@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Similar Songs Network</title>
+    <title> Les Miserables Network</title>
     
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -14,19 +14,12 @@
   <body>
     <main role="main" class="container">
       <header>
-      <h1>Similar Song Network</h1>
-      <p>Songs similar to one another according to <a href="http://www.last.fm/api">last.fm</a> are linked together. Song nodes are sized based on playcounts, and colored by artist.</p>
-      <h3>Root</h2>
-      <h5>Artist: Lady Gaga</h3>
-      <h5>Music: Poker Face</h3>
+      <h1>Les Miserables</h1>
+      <p>Characters and their interactions between each other. Node size is related to number of connections of said character.</p>
       </header>
       <div id="main" role="main">
         <div id="vis"></div>
       </div>
-      <footer>
-      <p>Data from <a href="http://www.last.fm/api/show/track.getSimilar">last.fm</a>. Some songs include additional links for effect.<br/>Popular songs are defined as those with playcounts above the median for all songs in network. This example is a simpler version of the <a href="http://flowingdata.com/2012/08/02/how-to-make-an-interactive-network-visualization/">tutorial</a> by <a href="http://vallandingham.me/">Jim Vallandingham</a>.</p>
-
-      </footer>
     </main> <!--! end of #container -->
     <!-- Bootstrap javascript files -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -43,11 +36,20 @@
                       .attr('height', height)
                       .attr('viewBox', [-width/2, -height/2, width, height])
         // Read the contents of data/songs.json file and process it as a graph variable
-        d3.json('data/songs.json').then(function(graph) {
+        d3.json('data/lesmiserables.json').then(function(graph) {
 
           // Set the nodes and links
           const nodes = graph.nodes;
           const links = graph.links;
+
+          nodes.forEach(d => {
+            d.connections = 0;
+            links.forEach(l => {
+              if (l.source == d.id || l.target == d.id) {
+                d.connections++;
+              }
+            });
+          });
 
           // create link svg elements
           const link = vis.append('g')
@@ -57,9 +59,9 @@
                           .append('line')
                           .attr('class', 'link');
 
-          const countExtent = d3.extent(nodes, d => d.playcount);
+          const countExtent = d3.extent(nodes, d => d.connections);
           let circleRadius = d3.scaleSqrt()
-                              .range([2, 20])
+                              .range([5, 20])
                               .domain(countExtent);
 
           // create node svg elements
@@ -69,10 +71,11 @@
                             .enter()
                             .append('circle')
                             .attr('class', 'node')
-                            .attr('r', d => circleRadius(d.playcount));
+                            .attr('r', d => circleRadius(d.connections))
+                            .attr('fill', '#307af2');
                             
           node.append('title')
-            .text( d => "Artist - " + d.artist + "\n" + "Music - " + d.name);
+            .text( d => "Name - " + d.id);
           
           // create simulation constant using the forceSimulation function defined down below
           const simulation = forceSimulation(nodes, links).on('tick', ticked);
