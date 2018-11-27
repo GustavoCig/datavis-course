@@ -44,6 +44,11 @@ Site: [https://gustavocig.github.io/datavis-course/](https://gustavocig.github.i
 [crimes.html](color-d3/crimes.html)</br>
 [usa.html](color-d3/usa.html)
 
+## Aula do dia 31/10/2018
+
+[earthquakes.html](d3_interactive/earthquakes.html)<br>
+[usa.html](d3_interactive/usa.html)
+
 ---
 
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
