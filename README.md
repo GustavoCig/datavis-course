@@ -39,6 +39,11 @@ Site: [https://gustavocig.github.io/datavis-course/](https://gustavocig.github.i
 [songs.html](d3_networks_trees/songs.html)</br>
 [lesmiserables.html](d3_networks_trees/lesmiserables.html)
 
+## Aula do dia 22/10/2018
+
+[crimes.html](color-d3/crimes.html)</br>
+[usa.html](color-d3/usa.html)
+
 ---
 
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
